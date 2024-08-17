@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from requests_html import HTMLSession
-from env import headers, cookies
+from env_s import headers, cookies
 
 
 

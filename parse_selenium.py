@@ -2,18 +2,19 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import time
+from env_s import PATH
+
 
 def get_driver():
     options = Options()
     options.add_argument('headless')
-    options.binary_location = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    options.binary_location = PATH
     driver = webdriver.Chrome(options=options)
     return driver
 def souper(url):
-    print(1, " |:| ", url)
     driver = get_driver()
     driver.get(url)
-    time.sleep(0.1)
+    time.sleep(0.3)
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     return soup
@@ -29,12 +30,11 @@ def imager(soup):
         for el1 in el.find_all('img'):
             k.append("https://norelem.de/"+el1.get('src'))
     return k
-def img_pict(soup):
-    img = soup.select('section.acc-tab__content')
-    # print(img)
-    for el in img:
-        print(el.find('img'))
-    # print('https://norelem.de/'+img)
+
+def parse_table(soup):
+    table = soup.find('table', attrs={'class': 'hover-v'})
+    for el in table:
+        print(el.find('th'))
     return
 def get_itemir(soup, url):
     # url = url
@@ -43,10 +43,12 @@ def get_itemir(soup, url):
     # named = get_named_(soup)
     # price = soup.find('span', attrs={'class': 'product-price__net-price'}).text
     # price_discount = None
-    # images = imager(soup)
-    image_picture = img_pict(soup)
     # material = soup.find('div', attrs={'class':"product-family-details__materials-description"}).text
-    print(image_picture)
+    # images = imager(soup)
+    product_drawing = None
+    table = parse_table(soup)
+
+
 
 def parser(url):
     soup = souper(url)
@@ -55,7 +57,11 @@ def parser(url):
 def start():
     with open('all_urls.txt', 'r', encoding='utf=8') as file:
         lines = file.readlines()
+        i = 1
         for line in lines:
-            parser(line.replace('\n', ''))
+            s = line.replace('\n', '')
+            print(i, ' |:| ', s)
+            parser(s)
+            i+=1
 start()
 

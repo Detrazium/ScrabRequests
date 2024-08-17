@@ -1,4 +1,9 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+PATH = os.environ['PATH_CHROMES']
 
 cookie = {
     'anonymous-consents': '%5B%5D',
