@@ -81,18 +81,21 @@ def parse_table(soup, driver):
             if row_el.text != '':
                 matrics_row.append(row_el.text)
         matrix.append(matrics_row)
-
-    # for ma in matrix:
-    #     print(ma)
     matrix_array = np.array(matrix)
-    return matrix
+    return matrix_array
 def get_itemir(soup, url, driver):
     url = url
     title = soup.find('title').text.strip()
     articul = soup.find('div', attrs={'class': 'family-number product-family-details__family-number'}).text
     named = get_named_(soup)
     price = soup.find('span', attrs={'class': 'product-price__net-price'}).text
-    material = soup.find('div', attrs={'class':"product-family-details__materials-description"}).text
+
+    material = soup.find('div', attrs={'class':"product-family-details__materials-description"})
+    material = material.text if material != None else '—'
+
+    version = soup.find('div', attrs={'class': "-materials-description--version"})
+    version = version.text if version != None else '—'
+
     images = imager(soup)
     table = parse_table(soup, driver)
 
@@ -103,6 +106,7 @@ def get_itemir(soup, url, driver):
         'named': named,
         'price': price,
         'material': material,
+        'version': version,
         'images': images,
         'table': table
     }
@@ -117,12 +121,16 @@ def parser(url):
 def start():
     with open('all_urls.txt', 'r', encoding='utf=8') as file:
         lines = file.readlines()
-        i = 1
+        i = 0
         for line in lines:
             s = line.replace('\n', '')
-            if '/c/' not in s:
+            if '/c/' not in s and '/p/agid.' in s:
+                i += 1
                 print(i, ' |:| ', s)
                 parse_page = parser(s)
-                i+=1
-start()
+def main():
+    start()
+
+if __name__ == '__main__':
+    main()
 
