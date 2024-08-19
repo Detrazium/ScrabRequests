@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 import time
 from env_s import PATH
 
@@ -11,13 +12,21 @@ def get_driver():
     options.binary_location = PATH
     driver = webdriver.Chrome(options=options)
     return driver
+
 def souper(url):
     driver = get_driver()
     driver.get(url)
-    time.sleep(0.3)
+
+    clic_button_cookie_bot(driver)
+    time.sleep(3)
+
+    # time.sleep(0.3)
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     return soup
+def clic_button_cookie_bot(driver):
+    driver.find_element(By.ID, 'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll').click()
+    driver.execute_script("window.scrollBy(0, 500)")
 def get_named_(soup):
     named = soup.find('h1', attrs={'class': 'product-family-details__heading'})
     if named != None:
@@ -32,11 +41,14 @@ def imager(soup):
     return k
 
 def parse_table(soup):
-    table = soup.find('table', attrs={'class': 'hover-v'})
-    for el in table:
-        print(el.find('th'))
+    table = soup.find('div', attrs={'class': 'product-table__scroll-wrapper'})
+    print(table)
+    for ell in table.find_all('th'):
+        for i in ell:
+            print(i)
     return
 def get_itemir(soup, url):
+
     # url = url
     # title = soup.find('title').text.strip()
     # articul = soup.find('div', attrs={'class': 'family-number product-family-details__family-number'}).text
