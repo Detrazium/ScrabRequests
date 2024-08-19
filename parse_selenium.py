@@ -18,9 +18,8 @@ def souper(url):
     driver.get(url)
 
     clic_button_cookie_bot(driver)
-    time.sleep(3)
+    time.sleep(4)
 
-    # time.sleep(0.3)
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     return soup
@@ -41,11 +40,25 @@ def imager(soup):
     return k
 
 def parse_table(soup):
-    table = soup.find('div', attrs={'class': 'product-table__scroll-wrapper'})
-    print(table)
-    for ell in table.find_all('th'):
-        for i in ell:
-            print(i)
+    tablearea = soup.find('div', attrs={'class': 'product-table__scroll-wrapper'})
+    table = tablearea.find('table', attrs={'class': 'product-table__list'})
+
+    thead = table.find('thead')
+    headers = thead.find_all('th')
+    # for el in headers:
+    #     print(el.text)
+    # print('\n ||:|| \n')
+
+    tbody = table.find('tbody')
+    bodys = tbody.find_all('tr')
+    # print(bodys)
+    for el in bodys:
+        rows = el.find_all('td')
+        for row_el in rows:
+            print(el.find_all('a', attrs={'class': 'product-table__code'}))
+            print(row_el)
+        print('\n')
+
     return
 def get_itemir(soup, url):
 
