@@ -1,3 +1,5 @@
+import csv
+
 import numpy as np
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -19,7 +21,7 @@ def souper(url):
     driver.get(url)
 
     clic_button_cookie_bot(driver)
-    time.sleep(5)
+    time.sleep(4)
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
@@ -81,8 +83,7 @@ def parse_table(soup, driver):
             if row_el.text != '':
                 matrics_row.append(row_el.text)
         matrix.append(matrics_row)
-    matrix_array = np.array(matrix)
-    return matrix_array
+    return matrix
 def get_itemir(soup, url, driver):
     url = url
     title = soup.find('title').text.strip()
@@ -122,12 +123,42 @@ def start():
     with open('all_urls.txt', 'r', encoding='utf=8') as file:
         lines = file.readlines()
         i = 0
-        for line in lines:
-            s = line.replace('\n', '')
-            if '/c/' not in s and '/p/agid.' in s:
-                i += 1
-                print(i, ' |:| ', s)
-                parse_page = parser(s)
+        with open('data/pages_parse.csv', 'w', encoding='utf=8', newline='') as csvFile:
+            writer = csv.writer(csvFile)
+            writer.writerow([
+                '№',
+                'url',
+                'title',
+                'articul',
+                'named',
+                'price',
+                'material',
+                'version',
+                'images',
+                'table'
+            ])
+            for line in lines:
+                s = line.replace('\n', '')
+                if '/c/' not in s and '/p/agid.' in s:
+                    i += 1
+                    print(i, ' |:| ', s)
+                    t1 = time.time()
+                    parse_page = parser(s)
+                    parse_page['№'] = i
+                    writer.writerow([
+                        parse_page['№'],
+                        parse_page['url'],
+                        parse_page['title'],
+                        parse_page['articul'],
+                        parse_page['named'],
+                        parse_page['price'],
+                        parse_page['material'],
+                        parse_page['version'],
+                        parse_page['images'],
+                        parse_page['table']
+                    ])
+                    t2 = time.time()
+                    print(t2 - t1)
 def main():
     start()
 
