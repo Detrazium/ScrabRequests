@@ -140,11 +140,13 @@ def start():
             for line in lines:
                 s = line.replace('\n', '')
                 if '/c/' not in s and '/p/agid.' in s:
+
                     i += 1
                     print(i, ' |:| ', s)
                     t1 = time.time()
                     parse_page = parser(s)
                     parse_page['№'] = i
+
                     writer.writerow([
                         parse_page['№'],
                         parse_page['url'],
@@ -157,6 +159,7 @@ def start():
                         parse_page['images'],
                         parse_page['table']
                     ])
+
                     t2 = time.time()
                     print(t2 - t1)
 def main():
