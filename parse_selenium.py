@@ -1,3 +1,4 @@
+import numpy as np
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -18,11 +19,11 @@ def souper(url):
     driver.get(url)
 
     clic_button_cookie_bot(driver)
-    time.sleep(4)
+    time.sleep(5)
 
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
-    return soup
+    return soup, driver
 def clic_button_cookie_bot(driver):
     driver.find_element(By.ID, 'CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll').click()
     driver.execute_script("window.scrollBy(0, 500)")
@@ -37,47 +38,81 @@ def imager(soup):
     for el in images:
         for el1 in el.find_all('img'):
             k.append("https://norelem.de/"+el1.get('src'))
+    img_picture_plan = product_image(soup)
+    k.append(img_picture_plan)
     return k
+def product_image(soup):
+    hrefCore = 'https://norelem.de/'
+    source = soup.find('a', attrs={'class': 'product-variants__drawing-image'})
+    picture = source.find('picture').find('img').get('src')
+    img_href = hrefCore+picture
+    return img_href
 
-def parse_table(soup):
+def parse_table(soup, driver):
     tablearea = soup.find('div', attrs={'class': 'product-table__scroll-wrapper'})
     table = tablearea.find('table', attrs={'class': 'product-table__list'})
 
     thead = table.find('thead')
     headers = thead.find_all('th')
-    # for el in headers:
-    #     print(el.text)
-    # print('\n ||:|| \n')
+
+    matrix = []
+    matrics_row = []
+    for el in headers[:-3]:
+        if el.text == 'AvailabilityPrice':
+            matrics_row.append('Availability_Price')
+            continue
+        if el.text != 'CAD':
+            matrics_row.append(el.text.replace('No.', ''))
+    matrix.append(matrics_row)
 
     tbody = table.find('tbody')
-    bodys = tbody.find_all('tr')
-    # print(bodys)
-    for el in bodys:
-        rows = el.find_all('td')
-        for row_el in rows:
-            print(el.find_all('a', attrs={'class': 'product-table__code'}))
-            print(row_el)
-        print('\n')
+    bodys = tbody.find_all('tr', attrs={'data-index': str})
+    for Tt in bodys:
+        if Tt.get('data-index') == None:
+            bodys.remove(Tt)
 
-    return
-def get_itemir(soup, url):
+    element = driver.find_elements(By.CLASS_NAME, 'product-table__code')
 
-    # url = url
-    # title = soup.find('title').text.strip()
-    # articul = soup.find('div', attrs={'class': 'family-number product-family-details__family-number'}).text
-    # named = get_named_(soup)
-    # price = soup.find('span', attrs={'class': 'product-price__net-price'}).text
-    # price_discount = None
-    # material = soup.find('div', attrs={'class':"product-family-details__materials-description"}).text
-    # images = imager(soup)
-    product_drawing = None
-    table = parse_table(soup)
+    for el, code in zip(bodys, element):
+        matrics_row = []
+        rows = el.find_all('td', attrs={'class': 'product-table__cell'})
+        matrics_row.append(code.text)
+        for row_el in rows[1:-3]:
+            if row_el.text != '':
+                matrics_row.append(row_el.text)
+        matrix.append(matrics_row)
 
+    # for ma in matrix:
+    #     print(ma)
+    matrix_array = np.array(matrix)
+    return matrix
+def get_itemir(soup, url, driver):
+    url = url
+    title = soup.find('title').text.strip()
+    articul = soup.find('div', attrs={'class': 'family-number product-family-details__family-number'}).text
+    named = get_named_(soup)
+    price = soup.find('span', attrs={'class': 'product-price__net-price'}).text
+    material = soup.find('div', attrs={'class':"product-family-details__materials-description"}).text
+    images = imager(soup)
+    table = parse_table(soup, driver)
+
+    parse_itog = {
+        'url': url,
+        'title': title,
+        'articul': articul,
+        'named': named,
+        'price': price,
+        'material': material,
+        'images': images,
+        'table': table
+    }
+    return parse_itog
 
 
 def parser(url):
-    soup = souper(url)
-    get_itemir(soup, url)
+    soup, driver = souper(url)
+    parse_page = get_itemir(soup, url, driver)
+    return parse_page
 
 def start():
     with open('all_urls.txt', 'r', encoding='utf=8') as file:
@@ -85,8 +120,9 @@ def start():
         i = 1
         for line in lines:
             s = line.replace('\n', '')
-            print(i, ' |:| ', s)
-            parser(s)
-            i+=1
+            if '/c/' not in s:
+                print(i, ' |:| ', s)
+                parse_page = parser(s)
+                i+=1
 start()
 
