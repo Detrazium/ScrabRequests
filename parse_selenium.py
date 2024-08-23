@@ -49,7 +49,6 @@ def product_image(soup):
     picture = source.find('picture').find('img').get('src')
     img_href = hrefCore+picture
     return img_href
-
 def parse_table(soup, driver):
     tablearea = soup.find('div', attrs={'class': 'product-table__scroll-wrapper'})
     table = tablearea.find('table', attrs={'class': 'product-table__list'})
@@ -90,10 +89,8 @@ def get_itemir(soup, url, driver):
     articul = soup.find('div', attrs={'class': 'family-number product-family-details__family-number'}).text
     named = get_named_(soup)
     price = soup.find('span', attrs={'class': 'product-price__net-price'}).text
-
     material = soup.find('div', attrs={'class':"product-family-details__materials-description"})
     material = material.text if material != None else '—'
-
     version = soup.find('div', attrs={'class': "-materials-description--version"})
     version = version.text if version != None else '—'
 
@@ -120,7 +117,7 @@ def parser(url):
     return parse_page
 
 def start():
-    with open('all_urls.txt', 'r', encoding='utf=8') as file:
+    with open('all_hrefs_url/all_urls.txt', 'r', encoding='utf=8') as file:
         lines = file.readlines()
         i = 0
         with open('data/pages_parse.csv', 'w', encoding='utf=8', newline='') as csvFile:

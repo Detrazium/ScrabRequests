@@ -5,6 +5,20 @@ from dotenv import load_dotenv
 load_dotenv()
 PATH = os.environ['PATH_CHROMES']
 
+path_hrefs = [
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_0.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_1.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_2.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_3.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_4.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_5.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_6.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_7.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_8.txt',
+    'all_hrefs_url/all_workers_hrefs/hrefs_one_worker_9.txt',
+
+]
+
 cookies = {
     'anonymous-consents': '%5B%5D',
     'cookie-notification': 'NOT_ACCEPTED',

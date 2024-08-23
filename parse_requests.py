@@ -22,7 +22,7 @@ def parser(url):
     soup = Gsoup(url)
     get_items(soup)
 def forerhrefs():
-    with open('all_urls.txt', 'r', encoding='utf=8') as file:
+    with open('all_hrefs_url/all_urls.txt', 'r', encoding='utf=8') as file:
         lines = file.readlines()
         for line in lines:
             parser(line.replace('\n', ''))
