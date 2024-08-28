@@ -74,6 +74,8 @@ def parse_table(soup, driver):
 
     element = driver.find_elements(By.CLASS_NAME, 'product-table__code')
 
+    for eli in element:
+        print(eli.text, ' G|FFF|G')
     for el, code in zip(bodys, element):
         matrics_row = []
         rows = el.find_all('td', attrs={'class': 'product-table__cell'})
