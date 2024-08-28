@@ -1,5 +1,7 @@
-import glob
+import pandas as pd
+from pathlib import Path
 
-reader = glob.glob('data/*.txt')
+datad = Path('data')
 
-with open('result.csv', )
+ddf = pd.concat([pd.read_csv(f) for f in datad.glob('*.csv')], ignore_index=True)
+ddf.to_csv('data/result_L.csv', index=False)

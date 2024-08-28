@@ -183,7 +183,6 @@ async def product_versions(page):
     return lst
 
 async def itemir(soup, url, page):
-    global ll
     url = url
     title = soup.find('title').text.strip()
     articul = soup.find('div', attrs={'class': 'family-number product-family-details__family-number'}).text
@@ -215,12 +214,12 @@ async def itemir(soup, url, page):
     return parse_itog, products_list_versions
 
 async def get_parse_items(page, url):
-    global ll
-    ll += 1
+    # global ll
+    # ll += 1
+    # print(ll, '|', url)
     li = await navigation(page)
     await page.wait_for_timeout(10)
     if li == 'lol':
-        print(ll, '|', url)
         await page.wait_for_selector('a.product-variants__drawing-image')
         await page.wait_for_selector('div.product-table__scroll-wrapper')
         await page.wait_for_selector('table.product-table__list')
